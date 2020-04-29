@@ -55,8 +55,10 @@ io.on('connection', (socket) => {
     io.to(jatekid).emit('stop');
   })
   socket.on("vegallas",szavak => {
-    console.log(szavak);
     io.to(szavak.jatekid).emit('jatekosszavai',{...szavak, jatekos: jatekok[szavak.jatekid].jatekosok.find(j=> j.id==socket.id).nev})
+  })
+  socket.on("pont",(p) =>{
+    io.to(p.jatekid).emit('jatekospontja',{id: socket.id, pont: p.pont})
   })
   socket.on('disconnect', () => {
     console.log("Lecsatlakozott",socket.id)

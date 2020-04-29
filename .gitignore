@@ -1,2 +1,4 @@
 backend/node_modules
-frontend
+frontend/dist
+frontend/node.modules
+backend/public
