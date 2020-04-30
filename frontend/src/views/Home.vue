@@ -320,13 +320,13 @@ export default {
     jatekosszavai(jatekos) {
       this.tobbijatekosmodal.tablazat.adatok.push(jatekos)
       this.tablazat.uj.betu.split(",").forEach(betu => {
-        if(this.tablazat.uj.orszag.startsWith(betu)) this.tablazat.uj.ervenyesseg.o=true;
-        if(this.tablazat.uj.varos.startsWith(betu)) this.tablazat.uj.ervenyesseg.v=true;
-        if(this.tablazat.uj.fiu.startsWith(betu)) this.tablazat.uj.ervenyesseg.f=true;
-        if(this.tablazat.uj.lany.startsWith(betu)) this.tablazat.uj.ervenyesseg.l=true;
-        if(this.tablazat.uj.allat.startsWith(betu)) this.tablazat.uj.ervenyesseg.a=true;
-        if(this.tablazat.uj.noveny.startsWith(betu)) this.tablazat.uj.ervenyesseg.n=true;
-        if(this.tablazat.uj.targy.startsWith(betu)) this.tablazat.uj.ervenyesseg.t=true;
+        if(this.tablazat.uj.orszag.startsWith(betu)&&this.tablazat.uj.orszag.length>betu.length) this.tablazat.uj.ervenyesseg.o=true;
+        if(this.tablazat.uj.varos.startsWith(betu)&&this.tablazat.uj.varos.length>betu.length) this.tablazat.uj.ervenyesseg.v=true;
+        if(this.tablazat.uj.fiu.startsWith(betu)&&this.tablazat.uj.fiu.length>betu.length) this.tablazat.uj.ervenyesseg.f=true;
+        if(this.tablazat.uj.lany.startsWith(betu)&&this.tablazat.uj.lany.length>betu.length) this.tablazat.uj.ervenyesseg.l=true;
+        if(this.tablazat.uj.allat.startsWith(betu)&&this.tablazat.uj.allat.length>betu.length) this.tablazat.uj.ervenyesseg.a=true;
+        if(this.tablazat.uj.noveny.startsWith(betu)&&this.tablazat.uj.noveny.length>betu.length) this.tablazat.uj.ervenyesseg.n=true;
+        if(this.tablazat.uj.targy.startsWith(betu)&&this.tablazat.uj.targy.length>betu.length) this.tablazat.uj.ervenyesseg.t=true;
       })
       this.tablazat.uj.ervenyesseg.o=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.orszag==this.tablazat.uj.orszag).length==1&&this.tablazat.uj.orszag.length>0&&this.tablazat.uj.ervenyesseg.o;
       this.tablazat.uj.ervenyesseg.v=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.varos==this.tablazat.uj.varos).length==1&&this.tablazat.uj.varos.length>0&&this.tablazat.uj.ervenyesseg.v;
