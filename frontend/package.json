@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "orszagvaros",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,7 +13,11 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "buefy": "^0.8.17",
     "core-js": "^3.6.4",
+    "ipfs": "^0.43.1",
+    "ipfs-pubsub-room": "^2.0.1",
+    "seedrandom": "^3.0.5",
     "vue": "^2.6.11",
+    "vue-page-title": "^1.2.2",
     "vue-router": "^3.1.6",
     "vue-socket.io": "^3.0.7",
     "vuex": "^3.1.3"

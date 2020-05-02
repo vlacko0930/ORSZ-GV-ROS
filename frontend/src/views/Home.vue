@@ -240,11 +240,13 @@
 // @ is an alias to /src
 
 export default {
+  title: "Ország-város",
   name: 'Home',
   components: {
   },
   data() {
     return {
+      seedNum: 0,
       jatekid: -1,
       nev: "",
       szobamod: 0,
@@ -265,80 +267,13 @@ export default {
           t:false
         }}
       },
+      pinginditva: 0,
       tobbijatekosmodal: {
         modal: false,
         tablazat: {
           adatok: []
         }
       }
-    }
-  },
-  sockets: {
-    jatekid(id) {
-      this.jatekid=id;
-    },
-    jatekosvaltozas(valtozas) {
-      if(valtozas.irany==1) this.jatekosok.push({id: valtozas.jatekos.id, nev: valtozas.jatekos.nev, pont: 0})
-      else if(valtozas.irany==-1)  this.jatekosok.splice(this.jatekosok.findIndex(j => j.id==valtozas.jatekos),1)
-      console.log(this.jatekosok)
-    },
-    jatekosok(jatekosok) {
-      this.jatekosok=jatekosok;
-    },
-    start(betu) {
-      this.betu=betu
-      if(this.tobbijatekosmodal.modal) {
-        this.tobbijatekosmodal.modal=false;
-
-        this.tablazat.adatok.push(this.tablazat.uj);
-        this.tobbijatekosmodal.tablazat.adatok=[];
-      }
-      this.tablazat.uj= {betu: this.betu, orszag:"", varos: "", fiu: "", lany: "", allat:"", noveny: "", targy: "", ervenyesseg: {
-        o: false,
-        v:false,
-        f:false,
-        l:false,
-        a:false,
-        n:false,
-        t:false
-      }}
-      this.indithato=false;
-      this.jatek=true;
-    },
-    stop() {
-      this.tablazat.uj.orszag=this.tablazat.uj.orszag.toUpperCase();
-      this.tablazat.uj.varos=this.tablazat.uj.varos.toUpperCase();
-      this.tablazat.uj.fiu=this.tablazat.uj.fiu.toUpperCase();
-      this.tablazat.uj.lany=this.tablazat.uj.lany.toUpperCase();
-      this.tablazat.uj.allat=this.tablazat.uj.allat.toUpperCase();
-      this.tablazat.uj.noveny=this.tablazat.uj.noveny.toUpperCase();
-      this.tablazat.uj.targy=this.tablazat.uj.targy.toUpperCase();
-      this.$socket.emit("vegallas",{...this.tablazat.uj, jatekid: this.jatekid});
-      this.tobbijatekosmodal.modal=true
-      this.jatek=false;
-    },
-    jatekosszavai(jatekos) {
-      this.tobbijatekosmodal.tablazat.adatok.push(jatekos)
-      this.tablazat.uj.betu.split(",").forEach(betu => {
-        if(this.tablazat.uj.orszag.startsWith(betu)&&this.tablazat.uj.orszag.length>betu.length) this.tablazat.uj.ervenyesseg.o=true;
-        if(this.tablazat.uj.varos.startsWith(betu)&&this.tablazat.uj.varos.length>betu.length) this.tablazat.uj.ervenyesseg.v=true;
-        if(this.tablazat.uj.fiu.startsWith(betu)&&this.tablazat.uj.fiu.length>betu.length) this.tablazat.uj.ervenyesseg.f=true;
-        if(this.tablazat.uj.lany.startsWith(betu)&&this.tablazat.uj.lany.length>betu.length) this.tablazat.uj.ervenyesseg.l=true;
-        if(this.tablazat.uj.allat.startsWith(betu)&&this.tablazat.uj.allat.length>betu.length) this.tablazat.uj.ervenyesseg.a=true;
-        if(this.tablazat.uj.noveny.startsWith(betu)&&this.tablazat.uj.noveny.length>betu.length) this.tablazat.uj.ervenyesseg.n=true;
-        if(this.tablazat.uj.targy.startsWith(betu)&&this.tablazat.uj.targy.length>betu.length) this.tablazat.uj.ervenyesseg.t=true;
-      })
-      this.tablazat.uj.ervenyesseg.o=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.orszag==this.tablazat.uj.orszag).length==1&&this.tablazat.uj.orszag.length>0&&this.tablazat.uj.ervenyesseg.o;
-      this.tablazat.uj.ervenyesseg.v=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.varos==this.tablazat.uj.varos).length==1&&this.tablazat.uj.varos.length>0&&this.tablazat.uj.ervenyesseg.v;
-      this.tablazat.uj.ervenyesseg.f=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.fiu==this.tablazat.uj.fiu).length==1&&this.tablazat.uj.fiu.length>0&&this.tablazat.uj.ervenyesseg.f;
-      this.tablazat.uj.ervenyesseg.l=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.lany==this.tablazat.uj.lany).length==1&&this.tablazat.uj.lany.length>0&&this.tablazat.uj.ervenyesseg.l;
-      this.tablazat.uj.ervenyesseg.a=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.allat==this.tablazat.uj.allat).length==1&&this.tablazat.uj.allat.length>0&&this.tablazat.uj.ervenyesseg.a;
-      this.tablazat.uj.ervenyesseg.n=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.noveny==this.tablazat.uj.noveny).length==1&&this.tablazat.uj.noveny.length>0&&this.tablazat.uj.ervenyesseg.n;
-      this.tablazat.uj.ervenyesseg.t=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.targy==this.tablazat.uj.targy).length==1&&this.tablazat.uj.targy.length>0&&this.tablazat.uj.ervenyesseg.t;
-      this.$socket.emit("pont",{pont: this.osszespont(), jatekid: this.jatekid});
-    },
-    jatekospontja(jp) {
-      this.jatekosok.find(j => j.id==jp.id).pont=jp.pont;
     }
   },
   methods: {
@@ -367,17 +302,182 @@ export default {
       }
     },
     elindithato() {
-      this.$socket.emit("indithato",this.jatekid)
-      this.indithato=true;
+      if (!this.indithato) {
+        this.indithato=true;
+        this.seedNum++;
+        this.jatekosok.find(j => j.id == this.$ipfsCID).allapot = 1
+        this.$room.broadcast("ready")
+        if (this.jatekosok.findIndex(j => j.allapot==0) == -1) {
+          this.start()
+        }
+      }
     },
-    ujjatek() {
-      this.$socket.emit("ujjatek",this.nev)
+    async ujjatek() {
+      this.csatlakozasjatekhoz();
     },
-    csatlakozasjatekhoz(){
-      this.$socket.emit("csatlakozasjatekhoz",{nev:this.nev, id: this.csatljatekazonosito})
+    async csatlakozasjatekhoz(){
+      this.jatekid = this.csatljatekazonosito || Math.floor(Math.random()*(999-100+1)+100)
+      this.$room = await new this.$vueRoom(this.$ipfs, "orszagvaros-"+this.csatljatekazonosito)
+      this.$room.on("peer joined", this.jatekosbelep);
+      this.$room.on("message", this.uzenetfogadasa);
+      this.jatekosok.push({jatekok: [], pont: 0, id: this.$ipfsCID, nev: this.nev, allapot: 0, ping: 0})
+      this.$room.broadcast("announce_player_name "+this.nev)
+      setInterval(this.ping, 15000);
     },
     stop() {
-      this.$socket.emit("stop",this.jatekid);
+      this.$room.broadcast("stop")
+      this.stopjatek()
+    },
+    stopjatek() {
+      this.tablazat.uj.orszag=this.tablazat.uj.orszag.toUpperCase();
+      this.tablazat.uj.varos=this.tablazat.uj.varos.toUpperCase();
+      this.tablazat.uj.fiu=this.tablazat.uj.fiu.toUpperCase();
+      this.tablazat.uj.lany=this.tablazat.uj.lany.toUpperCase();
+      this.tablazat.uj.allat=this.tablazat.uj.allat.toUpperCase();
+      this.tablazat.uj.noveny=this.tablazat.uj.noveny.toUpperCase();
+      this.tablazat.uj.targy=this.tablazat.uj.targy.toUpperCase();
+      this.$room.broadcast("vegallas " + JSON.stringify({...this.tablazat.uj, jatekos: this.nev}));
+      this.tobbijatekosmodal.modal=true
+      this.jatek=false;
+      this.jatekosszavai({...this.tablazat.uj, jatekos: this.nev, id: this.$ipfsCID})
+    },
+    ping() {
+      console.log(this.jatekosok)
+      this.jatekosok.forEach(j => {
+        if (j.ping < 0) {
+          this.jatekoskilep(j.id)
+        }
+      });
+      this.$room.broadcast("ping")
+      this.pinginditva = performance.now()
+      this.jatekosok.forEach(j => j.ping=-1);
+      this.jatekosok.find(j => j.id == this.$ipfsCID).ping = 0;
+    },
+    jatekosbelep(cid) {
+      this.$room.sendTo(cid, "announce_player_name "+this.nev)
+      if (this.indithato) {
+        this.$room.sendTo(cid, "ready")
+        this.$room.sendTo(cid, "seed " + this.seedNum-1 )
+      } else {
+        this.$room.sendTo(cid, "seed " + this.seedNum )
+      }
+
+    },
+    jatekoskilep(cid) {
+      console.log(cid + " left")
+      const leftID = this.jatekosok.findIndex(j=> j.id == cid)
+      if (leftID != -1) {
+        this.jatekosok.splice(leftID, 1)
+      }
+    },
+    start(){
+      const rng = new this.$rng(this.seed())
+      console.log(this.seed())
+      const betuk = ['A,Á','Á,A','B','C','CS','D','E,É','É,E','F','G','GY','H','I,Í','Í,I','J','K','L,LY','LY,L','M','N','NY','O,Ó','Ó,O','Ő,Ö','Ö,Ő','P','R','S','SZ','T','TY','U,Ú',"Ú,U","Ü,Ű",'Ű,Ü','V,W',"Z,ZS"]
+      this.betu=betuk[Math.floor(rng() * betuk.length)]
+      if(this.tobbijatekosmodal.modal) {
+        this.tobbijatekosmodal.modal=false;
+
+        this.tablazat.adatok.push(this.tablazat.uj);
+        this.tobbijatekosmodal.tablazat.adatok=[];
+      }
+      this.tablazat.uj= {betu: this.betu, orszag:"", varos: "", fiu: "", lany: "", allat:"", noveny: "", targy: "", ervenyesseg: {
+        o: false,
+        v:false,
+        f:false,
+        l:false,
+        a:false,
+        n:false,
+        t:false
+      }}
+      this.indithato=false;
+      this.jatek=true;
+      this.jatekosok.forEach(j => j.allapot=0);
+    },
+    uzenetfogadasa(message) {
+      console.log("[" + message.from + "]: " + message.data.toString())
+      if (message.from === this.$ipfsCID) 
+        {return}
+      const felado = message.from
+      const uzenet = message.data.toString();
+      const parancs = uzenet.split(" ", 1)[0];
+      const adat = uzenet.split(" ").splice(1);
+      if (this.jatekosok.findIndex(j => j.id == felado) == -1 && parancs != "announce_player_name") {
+        this.$room.sendTo(felado, "resync_request")
+        return
+      }
+      switch(parancs) {
+        case "resync_request":
+          // TODO
+          break;
+
+        case "ping":
+          this.$room.sendTo(felado, "pong")
+          break;
+
+        case "pong":
+          this.jatekosok.find(j => j.id == felado).ping = performance.now() - this.pinginditva
+          break;
+
+        case "announce_player_name":
+          if (this.jatekosok.findIndex(j => j.id == felado) == -1) {
+            this.jatekosok.push({jatekok: [], id: felado, nev: adat.join(" "), allapot: 0, pont:0, ping: 0})
+          } else {
+            this.jatekosok.find(j => j.id == felado).nev = adat.join(" ")
+          }
+          break;
+
+        case "ready":
+          this.jatekosok.find(j => j.id == felado).allapot = 1
+          if (this.jatekosok.findIndex(j => j.allapot==0) == -1) {
+            this.start()
+          }
+          break;
+
+        case "stop":
+          this.stopjatek()
+          break;
+
+        case "vegallas":
+          var jatekos = JSON.parse(adat.join(" "))
+          jatekos = {...jatekos, id: felado}
+          this.jatekosszavai(jatekos)
+          break;
+
+        case "pont":
+          this.jatekosok.find(j => j.id==felado).pont=Number(adat[0])
+          this.$forceUpdate();
+          break;
+
+        case "seed":
+          this.seedNum = Math.max(Number(adat[0]), this.seedNum)
+          break;
+
+      }
+    },
+    jatekosszavai(jatekos) {
+      // TODO: A kliensek nem egyeztetik pontjaikat, hanem kiszámolják a közzétett szavakból.
+      this.tobbijatekosmodal.tablazat.adatok.push(jatekos);
+      this.tablazat.uj.betu.split(",").forEach(betu => {
+        ["orszag", "varos", "fiu", "lany", "allat", "noveny", "targy"].forEach(entry => {
+          if(this.tablazat.uj[entry].startsWith(betu)&&this.tablazat.uj[entry].length>betu.length) this.tablazat.uj.ervenyesseg[entry[0]] = true
+        });
+      });
+
+      ["orszag", "varos", "fiu", "lany", "allat", "noveny", "targy"].forEach(entry => {
+        this.tablazat.uj.ervenyesseg[entry[0]] = this.tobbijatekosmodal.tablazat.adatok.filter(t => t[entry] == this.tablazat.uj[entry]).length==1 && this.tablazat.uj[entry].length>0 && this.tablazat.uj.ervenyesseg[entry[0]];
+      });
+      this.$room.broadcast("pont " +this.osszespont());
+      this.jatekosok.find(j => j.id==this.$ipfsCID).pont=this.osszespont()
+    },
+    seed() {
+      var sum = 0
+      for (var i = 0; i < this.jatekosok.length; i++){  
+        for (var j = 0; j < this.jatekosok[i].id.length; j++){  
+          sum += this.jatekosok[i].id.charCodeAt(j);
+        }
+      }
+      return sum+this.seedNum
     }
   }
 }
