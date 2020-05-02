@@ -6,9 +6,9 @@ import VueSocketIO from 'vue-socket.io'
 import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faFrown, faFlag, faHeading, faCity, faMars, faVenus, faPaw, faLeaf, faToolbox, faDoorOpen, faPlus, faSignature, faGamepad, faTerminal, faPlay, faInfo, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faFrown, faFlag, faHeading, faCity, faMars, faVenus, faPaw, faLeaf, faToolbox, faDoorOpen, faPlus, faSignature, faGamepad, faTerminal, faPlay, faInfo, faStar, faPoll } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faFrown, faFlag, faHeading, faCity, faMars, faVenus, faPaw, faLeaf, faToolbox, faDoorOpen, faPlus, faSignature, faGamepad, faTerminal, faPlay, faInfo, faStar);
+library.add(faFrown, faFlag, faHeading, faCity, faMars, faVenus, faPaw, faLeaf, faToolbox, faDoorOpen, faPlus, faSignature, faGamepad, faTerminal, faPlay, faInfo, faStar, faPoll);
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 

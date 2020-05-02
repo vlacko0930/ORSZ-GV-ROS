@@ -19,43 +19,50 @@
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="flag"/>{{column.label}}
                             </template>
-                              <b-icon icon="flag"/>{{ props.row.orszag }}
+                              <b-icon icon="flag"/>{{ props.row.orszag }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.orszag, 'ORSZÁG')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                           <b-table-column field="varos" label="VÁROS">
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="city"/>{{column.label}}
                             </template>
-                              <b-icon icon="city"/>{{ props.row.varos }}
+                              <b-icon icon="city"/>{{ props.row.varos }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.varos, 'VÁROS')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                           <b-table-column field="fiu" label="FIÚ">
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="mars"/>{{column.label}}
                             </template>
-                              <b-icon icon="mars"/>{{ props.row.fiu }}
+                              <b-icon icon="mars"/>{{ props.row.fiu }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.fiu, 'FIÚ')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                           <b-table-column field="lany" label="LÁNY">
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="venus"/>{{column.label}}
                             </template>
-                              <b-icon icon="venus"/>{{ props.row.lany }}
+                              <b-icon icon="venus"/>{{ props.row.lany }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.lany, 'LÁNY')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                           <b-table-column field="allat" label="ÁLLAT">
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="paw"/>{{column.label}}
                             </template>
-                              <b-icon icon="paw"/>{{ props.row.allat }}
+                              <b-icon icon="paw"/>{{ props.row.allat }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.allat, 'ÁLLAT')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                           <b-table-column field="noveny" label="NÖVÉNY">
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="leaf"/>{{column.label}}
                             </template>
-                              <b-icon icon="leaf"/>{{ props.row.noveny }}
+                              <b-icon icon="leaf"/>{{ props.row.noveny }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.noveny, 'NÖVÉNY')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                           <b-table-column field="targy" label="TÁRGY">
                             <template slot="header" slot-scope="{ column }">
                               <b-icon icon="toolbox"/>{{column.label}}
                             </template>
-                              <b-icon icon="toolbox"/>{{ props.row.targy }}
+                              <b-icon icon="toolbox"/>{{ props.row.targy }}<br/>
+                              <b-button icon-left="poll" @click="szavazasinditasa(props.row.targy, 'TÁRGY')" type="is-primary">Szavazás indítása a szóról</b-button>
                           </b-table-column>
                       </template>
 
@@ -73,7 +80,7 @@
                           </section>
                       </template>
                   </b-table>
-                  <b-table :data="jatekosok" bordered striped narrowed hoverable >
+                  <b-table :data="jatekosok" v-if="tobbijatekosmodal.ponttablazatlathatosag" bordered striped narrowed hoverable >
                           <template slot-scope="props">
                               <b-table-column field="jatekos" label="Játékos">
                                 <template slot="header" slot-scope="{ column }">
@@ -81,7 +88,7 @@
                                 </template>
                                   <b-icon icon="gamepad"/>{{ props.row.nev }}
                               </b-table-column>
-                              <b-table-column field="pont" label="PONT">
+                              <b-table-column field="pont" label="PONT" :key="props.row.pont">
                                 <template slot="header" slot-scope="{ column }">
                                   <b-icon icon="star"/>{{column.label}}
                                 </template>
@@ -254,7 +261,7 @@ export default {
       betu: '',
       jatek: false,
       tablazat: {
-        adatok:[/*{betu: "A", orszag:"Albánia", varos: "Albertirsa", fiu: "Absalom", lany: "Anna", allat:"Anakonda", noveny: "Alma", targy: "Almahámozó"}*/],
+        adatok:[],
         uj: {orszag:"", varos: "", fiu: "", lany: "", allat:"", noveny: "", targy: "", ervenyesseg: {
           o: false,
           v:false,
@@ -269,11 +276,71 @@ export default {
         modal: false,
         tablazat: {
           adatok: []
-        }
+        },
+        ponttablazatlathatosag: true,
+        ponttablazatoszlopok: [
+          {
+            field: 'nev',
+            label: 'Játékos'
+          },
+          {
+            field: 'pont',
+            label: 'PONT'
+          }
+        ]
+      },
+      szavazas: {
+        id: null, szo: null, rubrika:null
       }
     }
   },
   sockets: {
+    szavazaseredmenye(eredmeny) {
+      if(!eredmeny.letezik){
+        switch(eredmeny.rubrika) {
+          case 'ORSZÁG':
+            if(this.tablazat.uj.orszag==eredmeny.szo) this.tablazat.uj.ervenyesseg.o=false;
+            break;
+          case 'VÁROS':
+            if(this.tablazat.uj.varos==eredmeny.szo) this.tablazat.uj.ervenyesseg.v=false;
+            break;
+          case 'FIÚ':
+            if(this.tablazat.uj.fiu==eredmeny.szo) this.tablazat.uj.ervenyesseg.f=false;
+            break;
+          case 'LÁNY':
+            if(this.tablazat.uj.lany==eredmeny.szo) this.tablazat.uj.ervenyesseg.l=false;
+            break;
+          case 'ÁLLAT':
+            if(this.tablazat.uj.allat==eredmeny.szo) this.tablazat.uj.ervenyesseg.a=false;
+            break;
+          case 'NÖVÉNY':
+            if(this.tablazat.uj.noveny==eredmeny.szo) this.tablazat.uj.ervenyesseg.n=false;
+            break;
+          case 'TÁRGY':
+            if(this.tablazat.uj.targy==eredmeny.szo) this.tablazat.uj.ervenyesseg.t=false;
+            break;
+        }
+        this.$socket.emit("pont",{pont: this.osszespont(), jatekid: this.jatekid});
+      }
+      this.$buefy.toast.open({
+        message: eredmeny.letezik ? eredmeny.szo+" "+eredmeny.rubrika+" létezik." : eredmeny.szo+" "+eredmeny.rubrika+" nem létezik.",
+        type:  eredmeny.letezik ? 'is-success' : 'is-danger'
+      })
+    },
+    szavazas(szavazasadatok) {
+      this.szavazas=szavazasadatok;
+      this.$buefy.dialog.confirm({
+        type: 'is-primary',
+        hasIcon: true,
+        icon: 'poll',
+        title: 'SZAVAZÁS',
+        message: 'Létezik olyan '+szavazasadatok.rubrika+" hogy "+szavazasadatok.szo+"?",
+        cancelText: 'NEM',
+        confirmText: 'IGEN',
+        onConfirm: () => this.$socket.emit("szavazat",{jatekid: this.jatekid, szavazasid: this.szavazas.id, szavazat: 1}),
+        onCancel: () => this.$socket.emit("szavazat",{jatekid: this.jatekid,szavazasid: this.szavazas.id,szavazat:2})
+      })
+    },
     jatekid(id) {
       this.jatekid=id;
     },
@@ -328,20 +395,28 @@ export default {
         if(this.tablazat.uj.noveny.startsWith(betu)&&this.tablazat.uj.noveny.length>betu.length) this.tablazat.uj.ervenyesseg.n=true;
         if(this.tablazat.uj.targy.startsWith(betu)&&this.tablazat.uj.targy.length>betu.length) this.tablazat.uj.ervenyesseg.t=true;
       })
-      this.tablazat.uj.ervenyesseg.o=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.orszag==this.tablazat.uj.orszag).length==1&&this.tablazat.uj.orszag.length>0&&this.tablazat.uj.ervenyesseg.o;
-      this.tablazat.uj.ervenyesseg.v=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.varos==this.tablazat.uj.varos).length==1&&this.tablazat.uj.varos.length>0&&this.tablazat.uj.ervenyesseg.v;
-      this.tablazat.uj.ervenyesseg.f=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.fiu==this.tablazat.uj.fiu).length==1&&this.tablazat.uj.fiu.length>0&&this.tablazat.uj.ervenyesseg.f;
-      this.tablazat.uj.ervenyesseg.l=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.lany==this.tablazat.uj.lany).length==1&&this.tablazat.uj.lany.length>0&&this.tablazat.uj.ervenyesseg.l;
-      this.tablazat.uj.ervenyesseg.a=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.allat==this.tablazat.uj.allat).length==1&&this.tablazat.uj.allat.length>0&&this.tablazat.uj.ervenyesseg.a;
-      this.tablazat.uj.ervenyesseg.n=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.noveny==this.tablazat.uj.noveny).length==1&&this.tablazat.uj.noveny.length>0&&this.tablazat.uj.ervenyesseg.n;
-      this.tablazat.uj.ervenyesseg.t=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.targy==this.tablazat.uj.targy).length==1&&this.tablazat.uj.targy.length>0&&this.tablazat.uj.ervenyesseg.t;
+      this.tablazat.uj.ervenyesseg.o=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.orszag==this.tablazat.uj.orszag).length==1&&this.tablazat.uj.ervenyesseg.o;
+      this.tablazat.uj.ervenyesseg.v=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.varos==this.tablazat.uj.varos).length==1&&this.tablazat.uj.ervenyesseg.v;
+      this.tablazat.uj.ervenyesseg.f=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.fiu==this.tablazat.uj.fiu).length==1&&this.tablazat.uj.ervenyesseg.f;
+      this.tablazat.uj.ervenyesseg.l=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.lany==this.tablazat.uj.lany).length==1&&this.tablazat.uj.ervenyesseg.l;
+      this.tablazat.uj.ervenyesseg.a=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.allat==this.tablazat.uj.allat).length==1&&this.tablazat.uj.ervenyesseg.a;
+      this.tablazat.uj.ervenyesseg.n=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.noveny==this.tablazat.uj.noveny).length==1&&this.tablazat.uj.ervenyesseg.n;
+      this.tablazat.uj.ervenyesseg.t=this.tobbijatekosmodal.tablazat.adatok.filter(t => t.targy==this.tablazat.uj.targy).length==1&&this.tablazat.uj.ervenyesseg.t;
       this.$socket.emit("pont",{pont: this.osszespont(), jatekid: this.jatekid});
     },
     jatekospontja(jp) {
       this.jatekosok.find(j => j.id==jp.id).pont=jp.pont;
+      this.tobbijatekosmodal.ponttablazatlathatosag = false;
+
+       this.$nextTick(() => {
+         this.tobbijatekosmodal.ponttablazatlathatosag = true;
+       });
     }
   },
   methods: {
+    szavazasinditasa(szo, rubrika){
+      this.$socket.emit("szavazasinditasa", {szo, rubrika, jatekid: this.jatekid});
+    },
     osszespont() {
       var osszpont= this.pont(this.tablazat.uj.ervenyesseg);
       this.tablazat.adatok.forEach(adat => osszpont+=this.pont(adat.ervenyesseg))
