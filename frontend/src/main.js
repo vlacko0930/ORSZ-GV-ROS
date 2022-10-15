@@ -27,7 +27,7 @@ Vue.config.productionTip = false
 
 Vue.use(new VueSocketIO({
     debug: true,
-    connection: 'http://voros.ddns.net:314',
+    connection: '/',
     vuex: {
         store,
         actionPrefix: 'SOCKET_',
